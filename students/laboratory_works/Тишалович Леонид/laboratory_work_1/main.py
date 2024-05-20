@@ -23,10 +23,10 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
-app.include_router(tasks_router)
-app.include_router(participant_router)
-app.include_router(submission_router)
-app.include_router(team_member_router)
-app.include_router(team_router)
-app.include_router(auth_router)
+app.include_router(task_router, prefix="/tasks")
+app.include_router(participant_router, prefix="/participants")
+app.include_router(submission_router, prefix="/submissions")
+app.include_router(team_member_router, prefix="/team_members")
+app.include_router(team_router, prefix="/teams")
+app.include_router(auth_router, prefix="/auth")
 

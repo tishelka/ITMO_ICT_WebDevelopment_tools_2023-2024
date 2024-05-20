@@ -1,9 +1,9 @@
 from typing import Annotated, List
-
 from fastapi import APIRouter, Depends, HTTPException
-
 from repositories.team_repository import TeamRepository
-from schemas import TeamCreate, TeamUpdate
+from repositories.team_member_repository import TeamMemberRepository
+from schemas import TeamCreate, TeamUpdate, TeamMemberCreate
+from utils.auth_utils import get_user_from_token
 
 router = APIRouter(
     prefix="/teams",
@@ -45,3 +45,13 @@ async def delete_team(team_id: int):
     if not deleted_team:
         raise HTTPException(status_code=404, detail="Team not found")
     return {"message": "Team deleted successfully"}
+
+
+@router.post("/{team_id}/add_member/")
+async def add_member_to_team(
+        team_id: int,
+        team_member: Annotated[TeamMemberCreate, Depends()]
+):
+    team_member.team_id = team_id
+    await TeamMemberRepository.create(team_member)
+    return {"message": "Member added to team successfully"}
