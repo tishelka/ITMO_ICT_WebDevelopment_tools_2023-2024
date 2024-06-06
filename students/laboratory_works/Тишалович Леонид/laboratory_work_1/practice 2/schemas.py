@@ -22,7 +22,7 @@ class TeamMember(TeamMemberDefault, table=True):
     participants: Optional["Participant"] = Relationship(back_populates="teammembers")
     teams: Optional["Team"] = Relationship(back_populates="teammembers")
 
-# модель Submission. связующая модель. словарик
+
 class SubmissionDefault(SQLModel):
     task_id:  Optional[int] = Field(default=None, foreign_key="task.id")
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
@@ -59,7 +59,6 @@ class TeamDefault(SQLModel):
     name: str
     description: str
 
-# модель "Команда". many-to-may, вложенные модели
 class Team(TeamDefault, table=True):
     id: int = Field(default=None, primary_key=True)
 

@@ -6,11 +6,9 @@ from routers.participant_router import router as participant_router
 from routers.submission_router import router as submission_router
 from routers.team_member_router import router as team_member_router
 from routers.team_router import router as team_router
-from routers.auth_router import router as auth_router
 
 app = FastAPI()
 
-app.include_router(auth_router, prefix="/auth")
 app.include_router(participant_router, prefix="/participants")
 app.include_router(team_member_router, prefix="/team_members")
 app.include_router(team_router, prefix="/teams")
