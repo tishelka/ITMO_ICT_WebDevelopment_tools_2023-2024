@@ -1,5 +1,4 @@
 import os
-
 import aiohttp
 import asyncio
 import asyncpg
@@ -9,15 +8,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+# асинхронная функция для парсинга и сохранения данных
 async def parse_and_save(url):
+    # создаем асинхронную сессию для HTTP-запросов
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             html = await response.text()
         soup = BeautifulSoup(html, 'html.parser')
         title = soup.find('title').text
 
-        conn = await asyncpg.connect('postgresql://postgres:postgres@localhost:5432/web_data')
+        # подключаемся к базе данных и выполняем вставку данных
+        conn = await asyncpg.connect('postgresql://postgres:Bakugan102!@localhost:5432/web_data')
         try:
             await conn.execute(
                 "INSERT INTO site (url, title) VALUES ($1, $2)",
@@ -26,14 +27,13 @@ async def parse_and_save(url):
         finally:
             await conn.close()
 
-
+# главная асинхронная функция для запуска парсинга в параллельных задачах
 async def main(urls):
     tasks = []
     for url in urls:
         task = asyncio.create_task(parse_and_save(url))
         tasks.append(task)
     await asyncio.gather(*tasks)
-
 
 if __name__ == "__main__":
     urls = [
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     ]
 
     start_time = time.time()
-    asyncio.run(main(urls))
+    asyncio.run(main(urls))  # запускаем главную асинхронную функцию
     end_time = time.time()
     execution_time = end_time - start_time
-    print(f"async: {execution_time}")
+    print(f"async: {execution_time}")  # выводим время выполнения
