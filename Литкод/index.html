@@ -41,6 +41,9 @@
                                 <a href="../%D0%9B%D0%A02/" class="nav-link">Лабораторная раб. 2</a>
                             </li>
                             <li class="nav-item">
+                                <a href="../%D0%9B%D0%A03/" class="nav-link">Лабораторная раб. 3</a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="./" class="nav-link active" aria-current="page">Отработка</a>
                             </li>
                             <li class="nav-item">
@@ -61,7 +64,7 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../%D0%9B%D0%A02/" class="nav-link">
+                                <a rel="prev" href="../%D0%9B%D0%A03/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -110,10 +113,66 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-bs-level="2"><a href="#2" class="nav-link">Отработка ЛР2</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#set-matrix-zeroes" class="nav-link">Set Matrix Zeroes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_6" class="nav-link">Решение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#odd-even-linked-list" class="nav-link">Odd Even Linked List</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_7" class="nav-link">Решение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#construct-binary-tree-from-preorder-and-inorder-traversal" class="nav-link">Construct Binary Tree from Preorder and Inorder Traversal</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_8" class="nav-link">Решение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#letter-combinations-of-a-phone-number" class="nav-link">Letter Combinations of a Phone Number</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_9" class="nav-link">Решение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#3" class="nav-link">Отработка ЛР3</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#sort-colors" class="nav-link">Sort Colors</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_10" class="nav-link">Решение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#top-k-frequent-elements" class="nav-link">Top K Frequent Elements</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#_11" class="nav-link">Решение</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
             
-            <li class="nav-item" data-bs-level="1"><a href="#_6" class="nav-link">Выполненные задания</a>
+            <li class="nav-item" data-bs-level="1"><a href="#_12" class="nav-link">Выполненные задания</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -263,7 +322,199 @@ class Solution:
 
         return results
 </code></pre>
-<h1 id="_6">Выполненные задания</h1>
+<h2 id="2">Отработка ЛР2</h2>
+<h2 id="set-matrix-zeroes">Set Matrix Zeroes</h2>
+<p>Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.</p>
+<p>You must do it in place.</p>
+<p><img alt="Screenshot" src="../images/LCODE4.png" /></p>
+<h2 id="_6">Решение</h2>
+<pre><code>from typing import List
+
+class Solution:
+    def setZeroes(self, matrix: List[List[int]]) -&gt; None:
+        &quot;&quot;&quot;
+        Do not return anything, modify matrix in-place instead.
+        &quot;&quot;&quot;
+        if not matrix:
+            return
+
+        rows, cols = len(matrix), len(matrix[0])
+        first_row_has_zero = False
+        first_col_has_zero = False
+
+        for j in range(cols):
+            if matrix[0][j] == 0:
+                first_row_has_zero = True
+                break
+
+        for i in range(rows):
+            if matrix[i][0] == 0:
+                first_col_has_zero = True
+                break
+
+        for i in range(1, rows):
+            for j in range(1, cols):
+                if matrix[i][j] == 0:
+                    matrix[i][0] = 0
+                    matrix[0][j] = 0
+
+        for i in range(1, rows):
+            for j in range(1, cols):
+                if matrix[i][0] == 0 or matrix[0][j] == 0:
+                    matrix[i][j] = 0
+
+        if first_row_has_zero:
+            for j in range(cols):
+                matrix[0][j] = 0
+
+        if first_col_has_zero:
+            for i in range(rows):
+                matrix[i][0] = 0
+</code></pre>
+<h2 id="odd-even-linked-list">Odd Even Linked List</h2>
+<p>Given the head of a singly linked list, group all the nodes with odd indices together followed by the nodes with even indices, and return the reordered list.</p>
+<p>The first node is considered odd, and the second node is even, and so on.</p>
+<p>Note that the relative order inside both the even and odd groups should remain as it was in the input.</p>
+<p>You must solve the problem in O(1) extra space complexity and O(n) time complexity.</p>
+<p><img alt="Screenshot" src="../images/LCODE5.png" /></p>
+<h2 id="_7">Решение</h2>
+<pre><code># Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def oddEvenList(self, head: ListNode) -&gt; ListNode:
+        if not head or not head.next:
+            return head
+
+        odd = head
+        even = head.next
+        even_head = even
+
+        while even and even.next:
+            odd.next = odd.next.next
+            even.next = even.next.next
+            odd = odd.next
+            even = even.next
+
+        odd.next = even_head
+        return head
+</code></pre>
+<h2 id="construct-binary-tree-from-preorder-and-inorder-traversal">Construct Binary Tree from Preorder and Inorder Traversal</h2>
+<p>Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.</p>
+<p><img alt="Screenshot" src="../images/LCODE6.png" /></p>
+<h2 id="_8">Решение</h2>
+<pre><code># Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -&gt; Optional[TreeNode]:
+        if not preorder or not inorder:
+            return None
+
+        inorder_index_map = {value: index for index, value in enumerate(inorder)}
+
+        def build_subtree(preorder_start, preorder_end, inorder_start, inorder_end):
+            if preorder_start &gt; preorder_end or inorder_start &gt; inorder_end:
+                return None
+
+            root_value = preorder[preorder_start]
+            root = TreeNode(root_value)
+
+            inorder_root_index = inorder_index_map[root_value]
+
+            left_subtree_size = inorder_root_index - inorder_start
+
+            root.left = build_subtree(preorder_start + 1, preorder_start + left_subtree_size, inorder_start, inorder_root_index - 1)
+
+            root.right = build_subtree(preorder_start + left_subtree_size + 1, preorder_end, inorder_root_index + 1, inorder_end)
+
+            return root
+
+        return build_subtree(0, len(preorder) - 1, 0, len(inorder) - 1)
+</code></pre>
+<h2 id="letter-combinations-of-a-phone-number">Letter Combinations of a Phone Number</h2>
+<p>Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.</p>
+<p>A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.</p>
+<p><img alt="Screenshot" src="../images/LCODE7.png" /></p>
+<h2 id="_9">Решение</h2>
+<pre><code>class Solution:
+    def letterCombinations(self, digits: str) -&gt; List[str]:
+        if not digits:
+            return []
+
+        phone_map = {
+            '2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl',
+            '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'
+        }
+
+        result = []
+
+        def backtrack(index: int, current_combination: str):
+            if index == len(digits):
+                result.append(current_combination)
+                return
+
+            current_digit = digits[index]
+            for letter in phone_map[current_digit]:
+                backtrack(index + 1, current_combination + letter)
+
+        backtrack(0, &quot;&quot;)
+
+        return result
+</code></pre>
+<h2 id="3">Отработка ЛР3</h2>
+<h2 id="sort-colors">Sort Colors</h2>
+<p>Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.</p>
+<p>We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.</p>
+<p>You must solve this problem without using the library's sort function.</p>
+<p><img alt="Screenshot" src="../images/LCODE8.png" /></p>
+<h2 id="_10">Решение</h2>
+<pre><code>from typing import List
+
+class Solution:
+    def sortColors(self, nums: List[int]) -&gt; None:
+        &quot;&quot;&quot;
+        Do not return anything, modify nums in-place instead.
+        &quot;&quot;&quot;
+        low, mid, high = 0, 0, len(nums) - 1
+
+        while mid &lt;= high:
+            if nums[mid] == 0:
+                nums[low], nums[mid] = nums[mid], nums[low]
+                low += 1
+                mid += 1
+            elif nums[mid] == 1:
+                mid += 1
+            else:
+                nums[high], nums[mid] = nums[mid], nums[high]
+                high -= 1
+</code></pre>
+<h2 id="top-k-frequent-elements">Top K Frequent Elements</h2>
+<p>Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.</p>
+<p><img alt="Screenshot" src="../images/LCODE8.png" /></p>
+<h2 id="_11">Решение</h2>
+<pre><code>from typing import List
+import heapq
+from collections import Counter
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -&gt; List[int]:
+        count = Counter(nums)
+
+        heap = []
+        for num, freq in count.items():
+            heapq.heappush(heap, (freq, num))
+            if len(heap) &gt; k:
+                heapq.heappop(heap)
+
+        return [num for freq, num in heap]
+</code></pre>
+<h1 id="_12">Выполненные задания</h1>
 <p><img alt="Screenshot" src="../images/LCODEPROOF.png" /></p></div>
             </div>
         </div>

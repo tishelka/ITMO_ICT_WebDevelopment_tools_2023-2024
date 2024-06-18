@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>ПР 1.1 - Tishalovich Leonid. K33392. Docs</title>
+        <title>Лабораторная раб. 3 - Tishalovich Leonid. K33392. Docs</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -41,13 +41,13 @@
                                 <a href="../%D0%9B%D0%A02/" class="nav-link">Лабораторная раб. 2</a>
                             </li>
                             <li class="nav-item">
-                                <a href="../%D0%9B%D0%A03/" class="nav-link">Лабораторная раб. 3</a>
+                                <a href="./" class="nav-link active" aria-current="page">Лабораторная раб. 3</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../%D0%9B%D0%B8%D1%82%D0%BA%D0%BE%D0%B4/" class="nav-link">Отработка</a>
                             </li>
                             <li class="nav-item">
-                                <a href="./" class="nav-link active" aria-current="page">ПР 1.1</a>
+                                <a href="../%D0%9F%D0%A01.1/" class="nav-link">ПР 1.1</a>
                             </li>
                             <li class="nav-item">
                                 <a href="../%D0%9F%D0%A01.2/" class="nav-link">ПР 1.2</a>
@@ -64,12 +64,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../%D0%9B%D0%B8%D1%82%D0%BA%D0%BE%D0%B4/" class="nav-link">
+                                <a rel="prev" href="../%D0%9B%D0%A02/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../%D0%9F%D0%A01.2/" class="nav-link">
+                                <a rel="next" href="../%D0%9B%D0%B8%D1%82%D0%BA%D0%BE%D0%B4/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -91,7 +91,7 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-bs-level="1"><a href="#11" class="nav-link">ПР 1.1</a>
+            <li class="nav-item" data-bs-level="1"><a href="#3" class="nav-link">Лабораторная раб. 3</a>
               <ul class="nav flex-column">
             <li class="nav-item" data-bs-level="2"><a href="#_1" class="nav-link">Ход выполнения</a>
               <ul class="nav flex-column">
@@ -104,114 +104,162 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="11">ПР 1.1</h1>
+<h1 id="3">Лабораторная раб. 3</h1>
 <h2 id="_1">Ход выполнения</h2>
-<h3 id="mainpy">main.py</h3>
-<pre><code>from fastapi import FastAPI
-from fastapi import FastAPI
-from db import project_db
-from typing import Optional, List
-from typing_extensions import TypedDict
-from models import *
+<h3 id="dockerfile-lab_1">Dockerfile для lab_1</h3>
+<pre><code>FROM python:3.10-alpine3.19
+
+WORKDIR /lab_1
+
+COPY . .
+RUN pip3 install -r requirements.txt
+
+CMD uvicorn main:app --host localhost --port 8000
+</code></pre>
+<h3 id="dockerfile-lab_2">Dockerfile для lab_2</h3>
+<pre><code>FROM python:3.10-alpine3.19
+
+WORKDIR /lab_2
+
+COPY . .
+RUN pip3 install -r requirements.txt
+
+CMD uvicorn main:app --host localhost --port 8001
+</code></pre>
+<h3 id="docker-composeyaml">docker-compose.yaml</h3>
+<pre><code>version: '3.10'
+services:
+
+  lab_1:
+    container_name: lab_1
+    build:
+      context: ./lab_1
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - &quot;8000:8000&quot;
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    networks:
+      - backend_3
+    restart: always
+
+  lab_2:
+    container_name: lab_2
+    build:
+      context: ./lab_2
+    env_file: .env
+    restart: always
+    ports:
+      - &quot;8001:8001&quot;
+    command: uvicorn main:app --host 0.0.0.0 --port 8001
+    depends_on:
+      - redis
+      - db
+    networks:
+      - backend_3
+
+  celery:
+    build:
+      context: ./lab_2
+    container_name: celery
+    command: celery -A celery_start worker --loglevel=info
+    restart: always
+    depends_on:
+      - redis
+      - lab_2
+      - db
+    networks:
+      - backend_3
+
+  redis:
+    image: redis
+    ports:
+      - &quot;6379:6379&quot;
+    networks:
+      - backend_3
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=Bakugan102!
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - &quot;5432:5432&quot;
+    networks:
+      - backend_3
 
 
+volumes:
+  postgres_data:
+
+networks:
+  backend_3:
+     driver: bridge
+</code></pre>
+<h3 id="celery_mainpy">celery_main.py</h3>
+<pre><code>from celery import Celery
+
+celery_app = Celery(
+    &quot;worker&quot;,
+    broker=&quot;redis://redis:6379/0&quot;,
+    backend=&quot;redis://redis:6379/0&quot;,
+)
+
+celery_app.conf.update(
+    task_routes={
+        &quot;parse.parse_and_save&quot;: &quot;main-queue&quot;,
+    },
+)
+</code></pre>
+<h3 id="parsepy">parse.py</h3>
+<pre><code>import requests
+from bs4 import BeautifulSoup
+from celery_main import celery_app
+import psycopg2
+
+def get_db_connection():
+    return psycopg2.connect(
+        dbname='test_db',
+        user='postgres',
+        password='Bakugan102!',
+        host='db',
+        port='5432'
+    )
+
+def insert_data(url, title):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute('''INSERT INTO &quot;site&quot; (url, title) VALUES (%s, %s)
+    ''', (url, title))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+@celery_app.task
+def parse_and_save(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    title = soup.find('title').text
+    insert_data(url, title)
+</code></pre>
+<h3 id="mainpy-lab_2">main.py в lab_2</h3>
+<pre><code>from fastapi import FastAPI, BackgroundTasks
+from parse import parse_and_save
 app = FastAPI()
 
 
-@app.get(&quot;/&quot;)
-def hello():
-    return &quot;Hello, [username]!&quot;
-
-
-@app.get(&quot;/teams_list&quot;)
-def teams_list():
-    return temp_bd
-
-@app.get(&quot;/team/{team_id}&quot;)
-def teams_list(team_id: int):
-    return [team for team in temp_bd if team.get(&quot;id&quot;) == team_id]
-
-@app.post(&quot;/team&quot;)
-def teams_list(team: dict):
-    temp_bd.append(team)
-    return {&quot;status&quot;: 200, &quot;data&quot;: team}
-
-@app.delete(&quot;/team/delete{team_id}&quot;)
-def team_delete(team_id: int):
-    for i, team in enumerate(temp_bd):
-        if team.get(&quot;id&quot;) == team_id:
-            temp_bd.pop(i)
-            break
-    return {&quot;status&quot;: 201, &quot;message&quot;: &quot;deleted&quot;}
-
-
-@app.put(&quot;/team{team_id}&quot;)
-def team_update(team_id: int, team: dict):
-    for i, war in enumerate(temp_id):
-        if war.get(&quot;id&quot;) == team_id:
-            temp_id[i] = team
-    return temp_id
-</code></pre>
-<h3 id="dbpy">db.py</h3>
-<pre><code>project_db = [
-    {
-        'id' : 1,
-        'name' : 'name 1',
-        'description' : 'description',
-        'participants' : [
-            {
-                'id': 1,
-                'username': 'name 1',
-                'email': 'main@ex.com',
-                'password': 'pass',
-                'contact_number': '1111111'
-            }
-        ],
-
-    },
-    {
-        'id': 2,
-        'name': 'name 2',
-        'description': 'description 2',
-        'participants': [
-            {
-                'id' : 2,
-                'username' : 'name 2',
-                'email' : 'main@ex.com',
-                'password' : 'pass',
-                'contact_number' : '22222222'
-            },
-            {
-                'id': 3,
-                'username': 'name 3',
-                'email': 'main@ex.com',
-                'password': 'pass',
-                'contact_number': '333333'
-            }
-        ],
-
-    }
-]
-</code></pre>
-<h3 id="schemaspy">schemas.py</h3>
-<pre><code>from enum import Enum
-from typing import Optional, List
-
-from pydantic import BaseModel
-
-class Participant(BaseModel):
-    id: int
-    username: str
-    email: str
-    password: str
-    contact_number: str
-
-
-class Team(BaseModel):
-    id: int
-    name: str
-    description: str
-    participants: Optional[List[Participant]] = []
+@app.post(&quot;/parse/&quot;)
+async def parse(url: str, background_tasks: BackgroundTasks):
+    background_tasks.add_task(parse_and_save, url)
+    return {&quot;message&quot;: &quot;Parse started.&quot;}
 </code></pre></div>
             </div>
         </div>
